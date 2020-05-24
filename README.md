@@ -13,6 +13,12 @@ and makes adding, modifying, sorting, reporting and marking done, fast, easy and
 
 ## Things added since forked
 
+* click handler:
+  - id: show info
+  - description: modify description
+  - uda: add/remove current value as filter
+* add uda attribute: add uda value to task, (using fzf)
+* remove uda attribute: remove uda value under cursor from task
 * Support for native Windows 10 by calling *TaskWarrior* from *WSL* (*TaskWarrior* need to be installed inside *WSL*).
 * Fix `del` and `undo` bug by ignoring confirmation from shell.
 * Various small bugs has been fixed by browsing the issue list from the original repo.
@@ -62,12 +68,14 @@ Since TaskWarrior does not provide a [native Windows version](https://github.com
 
 ```vim
 nnoremap <buffer> A       ... " add annotation
-nnoremap <buffer> x       ... " delete annotation.
+nnoremap <buffer> X       ... " delete annotation.
+nnoremap <buffer> a       ... " add uda attribute
+nnoremap <buffer> x       ... " delete uda attribute under cursor
 nnoremap <buffer> o       ... " open the annotation as a file.
 nnoremap <buffer> a       ... " create new task.
 nnoremap <buffer> d       ... " set the task in current line done.
 nnoremap <buffer> D       ... " delete field/annotation/task
-nnoremap <buffer> <Space> ... " select/remove current task to selected list
+nnoremap <buffer> s       ... " select/remove current task to selected list
 nnoremap <buffer> m       ... " modify current field.
 nnoremap <buffer> M       ... " modify current task.
 nnoremap <buffer> f       ... " change filter
@@ -90,7 +98,7 @@ nnoremap <buffer> J       ... " next historical entry
 nnoremap <buffer> K       ... " previous historical entry
 nnoremap <buffer> B       ... " create a bookmark for current combination
 nnoremap <buffer> <F1>    ... " view the documents
-nnoremap <buffer> <CR>    ... " show task info.
+nnoremap <buffer> <CR>    ... " click handler
 nnoremap <buffer> <TAB>   ... " jump to the next column
 nnoremap <buffer> <S-TAB> ... " jump to the previous column
 nnoremap <buffer> <right> ... " jump to the next non-empty column
@@ -98,7 +106,7 @@ nnoremap <buffer> <left>  ... " jump to the previous non-empty column
 vnoremap <buffer> d       ... " set done to all visual selected tasks
 vnoremap <buffer> D       ... " delete all visual selected tasks
 vnoremap <buffer> <CR>    ... " show information about visual selected tasks
-vnoremap <buffer> <Space> ... " add visual selected tasks to selected list
+vnoremap <buffer> s       ... " add visual selected tasks to selected list
 
 ```
 ### Commands:

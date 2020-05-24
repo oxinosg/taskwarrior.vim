@@ -377,3 +377,79 @@ function! taskwarrior#action#show_info(...)
   endif
   call taskinfo#init(command, filter, split(system(g:tw_cmd.' rc.color=no '.command.' '.filter), '\n'))
 endfunction
+
+function! taskwarrior#action#handle_click()
+  let l:uuid = taskwarrior#data#get_uuid()
+
+  if l:uuid == ''
+    return
+  endif
+
+  let l:field = taskwarrior#data#current_column()
+  if index(['id', 'uuid'], l:field) != -1
+      call taskwarrior#action#show_info()
+  elseif l:field == 'description'
+    let l:value = taskwarrior#data#get_value_by_column('.', l:field)
+    let l:prompt = input(l:field . ': ', l:value)
+
+    if l:prompt ==  ""
+      echo "\<cr>"."modification cancelled."
+      return 
+    else
+      call taskwarrior#system_call(uuid, 'modify', ' ' . l:field . '="' . l:prompt . '"', 'silent')
+      echo "\<cr>" . "modification completed"
+    endif
+  else
+    let l:udaNames = system(g:tw_cmd.' _udas')
+    let l:filterableNames = split(l:udaNames, '\n')
+    " let l:filterableNames = add(split(l:udaNames, '\n'), 'priority')
+    if index(l:filterableNames, l:field) != -1
+      let l:fieldFilter = l:field . ':' . taskwarrior#data#get_value_by_column('.', l:field)
+      if index(split(b:filter, ' '), l:fieldFilter) != -1
+        let b:filter = substitute(b:filter, l:fieldFilter, '', 'g')
+        let b:hist = 1
+        call taskwarrior#list()
+      else
+        let b:filter = b:filter . ' ' . l:fieldFilter
+        let b:hist = 1
+        call taskwarrior#list()
+      endif
+    endif
+    return
+  endif
+endfunction
+
+function! taskwarrior#action#_add_task(f)
+  execute  ':TW ' . taskwarrior#data#get_uuid() . ' modify ' . s:attributeKey .  ':' . a:f
+endfunction
+
+function! taskwarrior#action#_select_value(f)
+  let l:values = system('task _show | grep uda.' . a:f . '.values | cut -f2- -d =')
+  if l:values != ""
+    let s:attributeKey = a:f
+    let l:attributeValues = split(l:values, ',')
+    call fzf#run({ 'source': l:attributeValues,
+        \ 'options': '+m -d "\t" --with-nth 1,4.. -n 1 --tiebreak=index',
+        \ 'down':    '40%',
+        \ 'sink': function('taskwarrior#action#_add_task') })
+  endif
+endfunction
+
+function! taskwarrior#action#add_attribute()
+  let l:udaNames = system(g:tw_cmd.' _udas')
+  " let l:filterableNames = add(split(l:udaNames, '\n'), 'priority')
+  let l:filterableNames = split(l:udaNames, '\n')
+  call fzf#run({ 'source': l:filterableNames, 
+        \ 'options': '+m -d "\t" --with-nth 1,4.. -n 1 --tiebreak=index',
+        \ 'down':    '40%',
+        \ 'sink': function('taskwarrior#action#_select_value') })
+endfunction
+
+function! taskwarrior#action#remove_attribute()
+  let l:field = taskwarrior#data#current_column()
+  let l:udaNames = system(g:tw_cmd.' _udas')
+  let l:filterableNames = split(l:udaNames, '\n')
+  if index(l:filterableNames, l:field) != -1
+    execute  ':TW ' . taskwarrior#data#get_uuid() . ' modify ' . l:field . '='
+  endif
+endfunction
