@@ -48,8 +48,9 @@ nnoremap <silent> <buffer> <Plug>(taskwarrior_decrease)        :<C-U>call taskwa
 vnoremap <silent> <buffer> <Plug>(taskwarrior_visual_done)     :call taskwarrior#action#visual('done')<CR>
 vnoremap <silent> <buffer> <Plug>(taskwarrior_visual_delete)   :call taskwarrior#action#visual('delete')<CR>
 vnoremap <silent> <buffer> <Plug>(taskwarrior_visual_select)   :call taskwarrior#action#visual('select')<CR>
-nnoremap <silent> <buffer> <Plug>(taskwarrior_add_attribute)        :call taskwarrior#action#add_attribute()<CR>
-nnoremap <silent> <buffer> <Plug>(taskwarrior_remove_attribute)        :call taskwarrior#action#remove_attribute()<CR>
+nnoremap <silent> <buffer> <Plug>(taskwarrior_add_attribute)   :call taskwarrior#action#add_attribute()<CR>
+nnoremap <silent> <buffer> <Plug>(taskwarrior_remove_attribute) :call taskwarrior#action#remove_attribute()<CR>
+nnoremap <silent> <buffer> <Plug>(taskwarrior_generate_report)  :call taskwarrior#action#generate_report()<CR>
 
 nmap <buffer> <F1>    <Plug>(taskwarrior_quickref)
 nmap <buffer> Q       <Plug>(taskwarrior_quit_all)
@@ -83,6 +84,7 @@ if g:task_readonly
         nunmap <silent> <buffer> A
         nunmap <silent> <buffer> X
         nunmap <silent> <buffer> x
+        nunmap <silent> <buffer> g
         nunmap <silent> <buffer> o
         nunmap <silent> <buffer> D
         nunmap <silent> <buffer> a
@@ -112,6 +114,7 @@ else
     nmap <silent> <buffer> D        <Plug>(taskwarrior_delete)
     nmap <silent> <buffer> a        <Plug>(taskwarrior_add_attribute)
     nmap <silent> <buffer> x        <Plug>(taskwarrior_remove_attribute)
+    nmap <silent> <buffer> g        <Plug>(taskwarrior_generate_report)
     nmap <silent> <buffer> c        <Plug>(taskwarrior_command)
     nmap <silent> <buffer> d        <Plug>(taskwarrior_done)
     nmap <silent> <buffer> r        <Plug>(taskwarrior_report)
