@@ -13,12 +13,13 @@ and makes adding, modifying, sorting, reporting and marking done, fast, easy and
 
 ## Things added since forked
 
-* click handler:
+* Click handler:
   - id: show info
   - description: modify description
   - uda: add/remove current value as filter
-* add uda attribute: add uda value to task, (using fzf)
-* remove uda attribute: remove uda value under cursor from task
+* Add uda attribute: add uda value to task, (using fzf)
+* Remove uda attribute: remove uda value under cursor from task
+* Report generation function (TODO hook it to task create/modify if enabled)
 * Support for native Windows 10 by calling *TaskWarrior* from *WSL* (*TaskWarrior* need to be installed inside *WSL*).
 * Fix `del` and `undo` bug by ignoring confirmation from shell.
 * Various small bugs has been fixed by browsing the issue list from the original repo.
