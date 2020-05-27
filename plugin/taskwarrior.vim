@@ -54,6 +54,7 @@ let g:task_right_arrow              = get(g:, 'task_right_arrow', '>> ')
 let g:task_readonly_symbol          = get(g:, 'task_readonly_symbol', '  ')
 let g:task_gui_term                 = get(g:, 'task_gui_term', 1)
 let g:task_auto_generate_reports    = get(g:, 'task_auto_generate_reports', 0)
+let g:task_keyword_highlight        = get(g:, 'task_keyword_highlight', [])
 let g:task_columns_format           = {
             \ 'depends':     ['list', 'count', 'indicator'],
             \ 'description': ['combined', 'desc', 'oneline', 'truncated', 'count'],

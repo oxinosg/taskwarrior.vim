@@ -20,6 +20,10 @@ and makes adding, modifying, sorting, reporting and marking done, fast, easy and
 * Add uda attribute: add uda value to task, (using fzf)
 * Remove uda attribute: remove uda value under cursor from task
 * Report generation function (TODO hook it to task create/modify if enabled)
+* Keyword highlight option: Color can be defined for keyword which depends on specific column
+
+
+
 * Support for native Windows 10 by calling *TaskWarrior* from *WSL* (*TaskWarrior* need to be installed inside *WSL*).
 * Fix `del` and `undo` bug by ignoring confirmation from shell.
 * Various small bugs has been fixed by browsing the issue list from the original repo.
@@ -166,6 +170,16 @@ let g:task_log_max         = '20'
 let g:task_left_arrow      = ' <<'
 " backward arrow ...
 let g:task_left_arrow      = '>> '
+" generate project reports
+let g:task_auto_generate_reports = 1
+" add text color to text
+" keyword: text to apply color 
+" depends: column name
+let g:task_keyword_highlight = [
+      \ { 'keyword': 'H', 'depends': 'priority', 'color': 'red'         },
+      \ { 'keyword': 'M', 'depends': 'priority', 'color': 'darkmagenta' },
+      \ { 'keyword': 'L', 'depends': 'priority', 'color': 'magenta'     },
+      \ ]
 
 
 " for native windows, the following two commands are used

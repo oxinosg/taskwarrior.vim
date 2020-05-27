@@ -273,7 +273,7 @@ function! taskwarrior#action#visual(action) range
   elseif a:action == 'delete'
     call taskwarrior#system_call(filter, 'delete', '', 'interactive')
   elseif a:action == 'info'
-    call taskinfo#init('information', filter, split(system(g:tw_cmd.' rc.color=no information '.filter), '\n'))
+    call taskinfo#init('information', filter, split(system(g:tw_cmd.' information '.filter), '\n'))
   elseif a:action == 'select'
     for var in fil
       let index = index(b:selected, var)
@@ -308,7 +308,7 @@ endfunction
 function! taskwarrior#action#undo()
   if has("gui_running")
     if exists('g:task_gui_term') && g:task_gui_term == 1
-      !g:tw_cmd rc.color=off undo
+      !g:tw_cmd undo
     elseif executable('xterm')
       silent !xterm -e 'task undo'
     elseif executable('urxvt')
@@ -375,11 +375,12 @@ function! taskwarrior#action#show_info(...)
       let filter = b:filter
     endif
   endif
-  call taskinfo#init(command, filter, split(system(g:tw_cmd.' rc.color=no '.command.' '.filter), '\n'))
+  call taskinfo#init(command, filter, split(system(g:tw_cmd.' '.command.' '.filter), '\n'))
 endfunction
 
 function! taskwarrior#action#handle_click()
-  let l:uuid = taskwarrior#data#get_uuid()
+  let ln = line('.')
+  let l:uuid = taskwarrior#data#get_uuid(ln)
 
   if l:uuid == ''
     return
@@ -401,8 +402,7 @@ function! taskwarrior#action#handle_click()
     endif
   else
     let l:udaNames = system(g:tw_cmd.' _udas')
-    let l:filterableNames = split(l:udaNames, '\n')
-    " let l:filterableNames = add(split(l:udaNames, '\n'), 'priority')
+    let l:filterableNames = split(l:udaNames, '\n') + ['status', 'project']
     if index(l:filterableNames, l:field) != -1
       let l:fieldFilter = l:field . ':' . taskwarrior#data#get_value_by_column('.', l:field)
       if index(split(b:filter, ' '), l:fieldFilter) != -1
