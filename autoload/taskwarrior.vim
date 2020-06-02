@@ -111,6 +111,14 @@ function! taskwarrior#init(...)
     if exists(':TagbarClose')
         TagbarClose
     endif
+
+    let l:path = finddir('.git/..', expand('%:p').';')
+    if (l:path != '')
+      if !empty(glob(l:path . '/.vim_taskrc'))
+        let g:tw_cmd = 'TASKRC=' . l:path . '/.vim_taskrc ' . split(g:tw_cmd, " ")[-1]
+      endif
+    endif
+
     let argstring = join(a:000, ' ')
     let [command, filter, type] = taskwarrior#command_type(argstring)
     let rc = g:task_rc_override

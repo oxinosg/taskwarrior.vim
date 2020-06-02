@@ -21,9 +21,8 @@ and makes adding, modifying, sorting, reporting and marking done, fast, easy and
 * Remove uda attribute: remove uda value under cursor from task
 * Report generation function (TODO hook it to task create/modify if enabled)
 * Keyword highlight option: Color can be defined for keyword which depends on specific column
-
-
-
+* Added function to add project uda, which will automatically create task config per project
+-----------------------
 * Support for native Windows 10 by calling *TaskWarrior* from *WSL* (*TaskWarrior* need to be installed inside *WSL*).
 * Fix `del` and `undo` bug by ignoring confirmation from shell.
 * Various small bugs has been fixed by browsing the issue list from the original repo.

@@ -51,6 +51,7 @@ vnoremap <silent> <buffer> <Plug>(taskwarrior_visual_select)   :call taskwarrior
 nnoremap <silent> <buffer> <Plug>(taskwarrior_add_attribute)   :call taskwarrior#action#add_attribute()<CR>
 nnoremap <silent> <buffer> <Plug>(taskwarrior_remove_attribute) :call taskwarrior#action#remove_attribute()<CR>
 nnoremap <silent> <buffer> <Plug>(taskwarrior_generate_report)  :call taskwarrior#action#generate_report()<CR>
+nnoremap <silent> <buffer> <Plug>(taskwarrior_new_project_uda)  :call taskwarrior#action#add_project_uda()<CR>
 
 nmap <buffer> <F1>    <Plug>(taskwarrior_quickref)
 nmap <buffer> Q       <Plug>(taskwarrior_quit_all)
@@ -126,6 +127,7 @@ else
     nmap <silent> <buffer> m        <Plug>(taskwarrior_modify_field)
     nmap <silent> <buffer> M        <Plug>(taskwarrior_modify_task)
     nmap <silent> <buffer> n        <Plug>(taskwarrior_new)
+    nmap <silent> <buffer> N        <Plug>(taskwarrior_new_project_uda)
     nmap <silent> <buffer> p        <Plug>(taskwarrior_paste)
     nmap <silent> <buffer> +        <Plug>(taskwarrior_start_task)
     nmap <silent> <buffer> -        <Plug>(taskwarrior_stop_task)

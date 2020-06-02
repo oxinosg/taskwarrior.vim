@@ -424,7 +424,7 @@ function! taskwarrior#action#_add_task(f)
 endfunction
 
 function! taskwarrior#action#_select_value(f)
-  let l:values = system('task _show | grep uda.' . a:f . '.values | cut -f2- -d =')
+  let l:values = system(g:tw_cmd . ' _show | grep uda.' . a:f . '.values | cut -f2- -d =')
   if l:values != ""
     let s:attributeKey = a:f
     let l:attributeValues = split(l:values, ',')
@@ -470,5 +470,87 @@ function! taskwarrior#action#generate_report()
     endif
   else
     echo 'Generation of reports is disabled'
+  endif
+endfunction
+
+" update project config to add column/label to report of project udas
+function! taskwarrior#action#update_project_config()
+  let l:path = finddir('.git/..', expand('%:p').';')
+  if (l:path != '')
+    let l:minimal_label = system(g:tw_cmd . ' _show | grep minimal.labels')
+    let l:minimal_columns = system(g:tw_cmd . ' _show | grep minimal.columns')
+    let l:udas = system(g:tw_cmd . ' _udas')
+    let l:uda_list = split(l:udas, '\n')
+    let l:modified = 0
+
+    for l:uda in l:uda_list
+      if stridx(l:minimal_columns, l:uda) == -1
+        let l:minimal_columns = substitute(l:minimal_columns, ',description', ',' . l:uda . ',description' ,'g')
+        let l:minimal_columns = split(l:minimal_columns, '\n')[0]
+        let l:modified = 1
+      endif
+
+      let l:uda_label = system(g:tw_cmd . ' _show | grep uda.' . l:uda . '.label= | cut -f2 -d"="')
+      let l:uda_label = split(l:uda_label, '\n')[0]
+
+      if stridx(l:minimal_label, l:uda_label) == -1
+        let l:minimal_label = substitute(l:minimal_label, ',Description', ',' . l:uda_label . ',Description' ,'g')
+        let l:minimal_label = split(l:minimal_label, '\n')[0]
+        let l:modified = 1
+      endif
+    endfor
+
+    if l:modified == 1
+      let l:label_exists = system('grep -i report.minimal.labels= ' . l:path . '/.vim_taskrc')
+      let l:columns_exists = system('grep -i report.minimal.columns= ' . l:path . '/.vim_taskrc')
+
+      if l:label_exists == ''
+        call system('echo "\n' . l:minimal_label . '" &>> ' . l:path . '/.vim_taskrc')
+      else
+        echo 'sed -i -e "s/report.minimal.labels=.*/' . l:minimal_label . '/g" "' . l:path . '/.vim_taskrc"'
+        call system('sed -i -e "s/report.minimal.labels=.*/' . l:minimal_label . '/g" "' . l:path . '/.vim_taskrc"')
+      endif
+
+      if l:columns_exists == ''
+        call system('echo "\n' . l:minimal_columns . '" &>> ' . l:path . '/.vim_taskrc')
+      else
+        call system('sed -i -e "s/report.minimal.columns=.*/' . l:minimal_columns . '/g" "' . l:path . '/.vim_taskrc"')
+      endif
+    endif
+  endif
+endfunction
+
+function! taskwarrior#action#create_project_config()
+  let l:path = finddir('.git/..', expand('%:p').';')
+  if (l:path != '')
+    let l:name = split(l:path, '/')
+
+    if empty(glob(l:path . '/.vim_taskrc'))
+      call system('echo -e "include ~/.taskrc \n" >> ' . l:path . '/.vim_taskrc')
+      
+      echo "File created: " . l:path . '/.vim_taskrc'
+    endif
+  endif
+endfunction
+
+" TODO in case project name contains special characters i.e. `-` report fails
+" TODO in case uda is same as project, report fails
+function! taskwarrior#action#add_project_uda()
+  let l:path = finddir('.git/..', expand('%:p').';')
+  if (l:path != '')
+    let l:key = input('Enter uda key: ')
+    let l:label = input('Enter uda label: ')
+    let l:values = input('Enter uda values separated by comma: ')
+
+    if l:key != '' && l:label != '' && l:values != ''
+      call taskwarrior#action#create_project_config()
+
+      call system('echo "\nuda.' . l:key . '.type=string\nuda.' . l:key . '.label=' . l:label . '\nuda.' . l:key . '.values=' . l:values . '" &>> ' . l:path . '/.vim_taskrc')
+
+      let g:tw_cmd = 'TASKRC=' . l:path . '/.vim_taskrc ' . split(g:tw_cmd, " ")[-1]
+
+      call taskwarrior#action#update_project_config()
+      echo 'Done!'
+    endif
   endif
 endfunction
