@@ -461,15 +461,22 @@ function! taskwarrior#action#generate_report()
       let l:name = split(l:path, '/')
 
       if (len(name) > 0)
-        let l:report = system('task clean project:' . l:name[-1])
+        let l:label_command = system(g:tw_cmd . ' _show | grep "report.minimal.labels"')
+        let l:label_command = substitute(l:label_command, 'report.minimal.labels=ID,', 'report.minimal.labels=', 'g')
+        let l:label_command = split(l:label_command, '\n')[0]
+
+        let l:column_command = system(g:tw_cmd . ' _show | grep "report.minimal.columns"')
+        let l:column_command = substitute(l:column_command, 'report.minimal.columns=id,', 'report.minimal.columns=', 'g')
+        let l:column_command = split(l:column_command, '\n')[0]
+
+        let l:command = g:tw_cmd . ' rc.' . l:label_command . ' rc.' . l:column_command  . ' rc.defaultwidth=999 rc.report.minimal.filter="(status:pending or status:completed)" minimal project:' . l:name[-1]
+        let l:report = system(l:command)
         let l:report = split(l:report, '\n')
-        let l:column_sizes = system('task clean project:' . l:name[-1] . ' 2>/dev/null | sed -n 3p')
+        let l:column_sizes = system(l:command . ' 2>/dev/null | sed -n 3p')
         let l:column_sizes = split(l:column_sizes, ' ')
 
-        echo l:column_sizes
-
         let l:val = ""
-        for l:line in l:report[0:-4]
+        for l:line in l:report[0:-7]
           let l:start_pos = 0
 
           for l:size in l:column_sizes[0:-1]
